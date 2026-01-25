@@ -10,7 +10,7 @@ sentiment_engine = SentimentEngine()
 regime_detector = RegimeDetector()
 news_aggregator = NewsAggregator() # Assumes you saved the scraper code from previous turn
 
-@router.get("/refresh-intelligence") # response_model=RegimeSignal)
+@router.get("/refresh-intelligence", response_model=RegimeSignal)
 async def refresh_market_intelligence():
     """
     Main heartbeat: Scrapes news -> Analyzes Sentiment -> Determines Regime
