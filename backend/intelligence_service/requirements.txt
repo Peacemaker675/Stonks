@@ -1,0 +1,27 @@
+# --- Core Framework ---
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.6.0
+pydantic-settings>=2.1.0
+
+# --- Data Fetching & Scraping ---
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+feedparser>=6.0.10
+trafilatura>=1.6.0
+yfinance>=0.2.36
+
+# --- Machine Learning (AI) ---
+# Note: 'torch' is large. For Docker, consider installing the CPU-only version to save space.
+torch>=2.1.0
+transformers>=4.37.0
+numpy>=1.26.0
+
+# --- Database & Utilities ---
+# (Drivers for the DBs mentioned in your config)
+psycopg2-binary>=2.9.9  # PostgreSQL driver
+redis>=5.0.1            # Redis client
+
+# --- Testing ---
+pytest>=8.0.0
+httpx>=0.26.0           # Required for testing FastAPI endpoints
