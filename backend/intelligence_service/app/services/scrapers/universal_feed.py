@@ -5,16 +5,10 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 from typing import List, Dict, Optional
 
-# Configure Logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class UniversalNewsScraper:
-    """
-    Production-grade free scraper using RSS discovery + Trafilatura extraction.
-    """
-    
-    # 1. Define Sources (Easy to extend)
     FEEDS = {
         "moneycontrol_business": "https://www.moneycontrol.com/rss/business.xml",
         "moneycontrol_markets": "https://www.moneycontrol.com/rss/MCtopnews.xml",
@@ -24,15 +18,11 @@ class UniversalNewsScraper:
     }
 
     def _fetch_article_body(self, url: str) -> Optional[Dict]:
-        """
-        Private method to download and extract clean text from a URL.
-        """
         try:
             downloaded = trafilatura.fetch_url(url)
             if downloaded is None:
                 return None
                 
-            # Extract metadata and text without noise (ads, navbars)
             result = trafilatura.extract(
                 downloaded, 
                 include_comments=False, 
@@ -56,10 +46,7 @@ class UniversalNewsScraper:
             return None
 
     def scrape_feed(self, source_name: str, feed_url: str, limit: int = 5) -> List[Dict]:
-        """
-        Scrapes a single RSS feed.
-        """
-        logger.info(f"Polling {source_name}...")
+        logger.info(f"Polling {source_name}")
         try:
             feed = feedparser.parse(feed_url)
         except Exception as e:
@@ -68,10 +55,8 @@ class UniversalNewsScraper:
 
         articles = []
 
-        # Process entries
         for entry in feed.entries[:limit]:
             try:
-                # Basic info from RSS
                 article = {
                     "title": entry.title,
                     "url": entry.link,
@@ -81,7 +66,6 @@ class UniversalNewsScraper:
                     "full_text": None 
                 }
 
-                # Detailed info from Trafilatura
                 content_data = self._fetch_article_body(entry.link)
                 
                 if content_data:
@@ -99,9 +83,6 @@ class UniversalNewsScraper:
         return articles
 
     def run(self) -> List[Dict]:
-        """
-        Runs all feeds in parallel using threads.
-        """
         all_news = []
         with ThreadPoolExecutor(max_workers=5) as executor:
             futures = {

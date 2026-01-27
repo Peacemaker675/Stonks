@@ -15,7 +15,7 @@ class NewsAggregator:
 
     def get_stock_specific_news(self, tickers: List[str]) -> Dict[str, List[Dict]]:
         """
-        Gets news for your specific watchlist.
+        Gets news for your specific stocks.
         Returns: {'RELIANCE': [news_items], 'TCS': [news_items]}
         """
         results = {}

@@ -7,9 +7,6 @@ logger = logging.getLogger(__name__)
 
 class TickerNewsScraper:
     def fetch_news(self, ticker_symbol: str) -> List[Dict]:
-        """
-        Fetches news specifically for a company (e.g., 'RELIANCE.NS')
-        """
         try:
             # Handle Indian NSE/BSE suffixes
             if not (ticker_symbol.endswith(".NS") or ticker_symbol.endswith(".BO")):
@@ -21,7 +18,6 @@ class TickerNewsScraper:
             
             clean_news = []
             for item in news_list:
-                # Basic cleaning of YFinance response
                 clean_news.append({
                     "title": item.get('title'),
                     "source": item.get('publisher'),
