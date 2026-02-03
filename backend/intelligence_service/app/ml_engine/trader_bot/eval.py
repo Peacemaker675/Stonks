@@ -1,19 +1,29 @@
 import pandas as pd
 from stable_baselines3 import PPO
+from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 from enviornment import TradingEnv
 
 data = pd.read_csv("training.csv")
-data = data.drop(columns=["date"])
+data = data.iloc[200000:].reset_index(drop=True)
+data = data.drop(columns=["date"], errors='ignore')
 
-env = TradingEnv(data, render_mode="human")
-model = PPO.load("ppo_trader")
+env = DummyVecEnv([lambda: TradingEnv(data, render_mode="human")])
 
-obs, _ = env.reset()
+try:
+    env = VecNormalize.load("model/vec_normalize_v2.pkl", env)
+except FileNotFoundError:
+    print("file not found")
+    exit()
 
+env.training = False 
+env.norm_reward = False
+
+model = PPO.load("model/ppo_trader_v2", env=env)
+obs = env.reset()
 while True:
-    action, _ = model.predict(obs, deterministic=True)
-    obs, reward, terminated, truncated, _ = env.step(action)
+    action, _states = model.predict(obs, deterministic=True)
+    obs, reward, done, info = env.step(action)
+    print(f"balance = {info[0]["balance"]}")
     env.render()
-
-    if terminated or truncated:
+    if done:
         break
