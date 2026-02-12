@@ -17,3 +17,22 @@ class RegimeSignal(BaseModel):
 class HealthCheck(BaseModel):
     status: str
     version: str
+
+class MarketTick(BaseModel):
+    timestamp: datetime
+    price: float
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: int 
+    volatility_1h: float
+    vix_proxy: float
+    sma_50: float
+    dist_sma_50: float
+    sma_200: float
+    dist_sma_200: float
+    regime_vol: float
+    return_1h: float = Field(alias="1h_return") 
+    sentiment_score: float
+

@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.endpoints import router
 from app.core.config import get_settings
+from app.schemas import MarketTick
 
 settings = get_settings()
 
@@ -21,3 +22,7 @@ app.include_router(router, prefix=settings.API_V1_STR)
 @app.get("/health")
 def health_check():
     return {"status": "ok", "service": "Intelligence Layer"}
+
+@app.post("/predict")
+def predict(MarketTick: MarketTick):
+

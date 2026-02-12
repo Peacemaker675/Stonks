@@ -11,8 +11,10 @@ __pycache__/
 
 # Distribution / packaging
 dist/
+.egg/
 build/
 *.egg-info/
+.vscode/
 
 # Unit test / coverage reports
 .pytest_cache/
