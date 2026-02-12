@@ -17,7 +17,7 @@ build/
 *.egg-info/
 *.egg
 .vscode/
-
+onnxruntime-win-x64-1.16.3/
 # Unit test / coverage reports
 .pytest_cache/
 .coverage
