@@ -7,11 +7,11 @@ struct Level { double price; double qty; };
 
 class OrderBook {
 public:
-    void update(double price, double volatility);
+    void update(double price, double volume, double volatility);
     double getExecutionPrice(int side, double qty);
 
 private:
-    std::vector<Level> bids_;
-    std::vector<Level> asks_;
-    double current_price_;
+    double current_price_ = 0;
+    double current_volume_ = 100000;
+    double current_volatility_ = 0.01;
 };

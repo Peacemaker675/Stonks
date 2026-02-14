@@ -3,6 +3,8 @@
 #include "OrderBook.hpp"
 #include "Types.hpp"
 #include <deque>
+#include <iomanip>
+#include <iostream>
 #include <memory>
 
 class Strategy {
@@ -20,6 +22,14 @@ private:
     const size_t FEATURE_DIM = 17;
 
     // Portfolio State
-    double cash_ = 100000.0;
-    double position_ = 0.0;
+    double initial_cash = 1'000'000'000.0;
+    double cash_ = initial_cash;
+    double shares = 0;
+    double profit = 0;
+
+    /*
+        cash_ratio = self.balance / self.initial_balance
+        position_value = (self.shares * self.current_price) / self.initial_balance
+        position_ratio = self.shares / 1e6  # scale
+    */
 };

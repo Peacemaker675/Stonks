@@ -1,25 +1,33 @@
 #include "OrderBook.hpp"
 #include <cmath>
 
-void OrderBook::update(double price, double volatility) {
+void OrderBook::update(double price, double volume, double volatility) {
     current_price_ = price;
-    bids_.clear();
-    asks_.clear();
-
-    // HFT Simulation: Spread widens with volatility
-    // Base spread 1 pip (0.0001) + volatility impact
-    double spread = 0.0001 + (volatility * 0.01); 
-
-    for(int i=1; i<=5; ++i) {
-        bids_.push_back({price - (spread * i), 1000.0 / i});
-        asks_.push_back({price + (spread * i), 1000.0 / i});
-    }
+    current_volume_ = volume;
+    // If volatility is 0 in CSV, default to 1% (0.01)
+    current_volatility_ = (volatility > 0) ? volatility : 0.01;
 }
 
-double OrderBook::getExecutionPrice(int side, double qty) {
-    // 0 = Buy (Ask side), 1 = Sell (Bid side)
-    // Simple top-of-book simulation for now
-    if (side == 0 && !asks_.empty()) return asks_[0].price;
-    if (side == 1 && !bids_.empty()) return bids_[0].price;
-    return current_price_;
+// Calculate the Price you actually get (including synthetic spread & slippage)
+double OrderBook::getExecutionPrice(int side, double order_size) {
+    // 1. Base Spread (e.g., 0.02% or 2 basis points)
+    // In high vol, spread widens (Standard HFT behavior)
+    double spread_pct = 0.0002 + (current_volatility_ * 0.1); 
+    double half_spread = current_price_ * (spread_pct / 2.0);
+
+    // 2. Market Impact (Slippage)
+    // If we buy 1% of the total volume, we move price by ~1% of volatility
+    double market_impact = 0.0;
+    if (current_volume_ > 0) {
+        double participation_rate = order_size / current_volume_;
+        market_impact = current_price_ * current_volatility_ * participation_rate;
+    }
+    // 3. Final Price Calculation
+    if (side == 0) { // BUY
+        // You pay: Price + Half Spread + Impact
+        return current_price_ + half_spread + market_impact;
+    } else { // SELL
+        // You get: Price - Half Spread - Impact
+        return current_price_ - half_spread - market_impact;
+    }
 }

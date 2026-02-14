@@ -54,10 +54,10 @@ private:
         // 2. Extract Timestamp (Column 0)
         tick.timestamp = static_cast<long>(raw_values[0]);
 
-        // 3. Extract Price (Column 5 = Close) for execution logic
+        // 3. Extract Price (Column 4 = Close) for execution logic
         // Ensure we have enough columns to avoid crashes
         if (raw_values.size() > 5) {
-            tick.price = raw_values[5]; 
+            tick.price = raw_values[4]; 
         } else {
             tick.price = 0.0;
         }
@@ -67,7 +67,7 @@ private:
         // We skip the timestamp (col 0) and take the next 17 columns.
         // You might need to adjust the start index '1' depending on exactly which columns your model trained on.
         int start_col = 1; 
-        int feature_count = 17;
+        int feature_count = 14;
 
         for (int i = 0; i < feature_count; ++i) {
             if (start_col + i < raw_values.size()) {
@@ -76,7 +76,6 @@ private:
                 tick.features.push_back(0.0f); // Pad with 0 if data is missing
             }
         }
-
         return tick;
     }
 };
